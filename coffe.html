@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Shop</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f1ea;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            text-align: center;
+            color: #4a3525;
+            margin-bottom: 25px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #5c4033;
+        }
+        select, input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .radio-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .radio-option {
+            background: #f9f9f9;
+            border: 2px solid #ddd;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .radio-option input {
+            display: none;
+        }
+        .radio-option.selected {
+            border-color: #4a3525;
+            background-color: #efebe9;
+        }
+        button {
+            width: 100%;
+            background-color: #4a3525;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #35261a;
+        }
+        .receipt {
+            margin-top: 25px;
+            padding: 20px;
+            border: 2px dashed #4a3525;
+            background-color: #faf8f5;
+            border-radius: 8px;
+            display: none;
+        }
+        .receipt h3 {
+            text-align: center;
+            margin-top: 0;
+            color: #4a3525;
+        }
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .order-code {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #d32f2f;
+            margin: 15px 0;
+        }
+        .thank-you {
+            text-align: center;
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>☕ BARI GALUST COFFEE SHOP</h1>
+
+    <div class="section">
+        <label for="coffee-select">Yntreq surche:</label>
+        <select id="coffee-select">
+            <option value="2.50">Espresso - $2.50</option>
+            <option value="3.00" selected>Americano - $3.00</option>
+            <option value="2.80">Black Coffee - $2.80</option>
+            <option value="3.50">Cappuccino - $3.50</option>
+            <option value="3.80">Latte - $3.80</option>
+            <option value="3.40">Macchiato - $3.40</option>
+            <option value="4.00">Mocha - $4.00</option>
+            <option value="3.70">Flat White - $3.70</option>
+            <option value="4.50">Irish Coffee - $4.50</option>
+            <option value="3.20">Cold Brew - $3.20</option>
+        </select>
+    </div>
+
+    <div class="section">
+        <label for="sugar-input">Qani gdal shaqaravaz eq cankanum? (0-5):</label>
+        <input type="number" id="sugar-input" min="0" max="5" value="1">
+    </div>
+
+    <div class="section">
+        <label>Yntreq vcharman exanake:</label>
+        <div class="radio-group">
+            <div class="radio-option selected" onclick="selectPayment(this, 'Apple Pay')">
+                <input type="radio" name="payment" checked> Apple Pay
+            </div>
+            <div class="radio-option" onclick="selectPayment(this, 'Google Pay')">
+                <input type="radio" name="payment"> Google Pay
+            </div>
+            <div class="radio-option" onclick="selectPayment(this, 'Credit Card')">
+                <input type="radio" name="payment"> Credit Card
+            </div>
+            <div class="radio-option" onclick="selectPayment(this, 'Cash')">
+                <input type="radio" name="payment"> Cash
+            </div>
+        </div>
+    </div>
+
+    <button onclick="generateReceipt()">Hortatvel Patvere</button>
+
+    <div class="receipt" id="receipt">
+        <h3>=== VCHARMAN KTRON ===</h3>
+        <div class="receipt-row">
+            <span>Surch:</span>
+            <span id="r-coffee">Americano</span>
+        </div>
+        <div class="receipt-row">
+            <span>Shaqaravaz:</span>
+            <span id="r-sugar">1 gdal</span>
+        </div>
+        <div class="receipt-row">
+            <span>Vcharman exanak:</span>
+            <span id="r-payment">Apple Pay</span>
+        </div>
+        <div class="receipt-row" style="border-top: 1px solid #ddd; padding-top: 10px; font-weight: bold;">
+            <span>Yndhanur gumar:</span>
+            <span id="r-price">$3.00</span>
+        </div>
+        
+        <div class="order-code" id="r-code">#5432</div>
+        
+        <p class="thank-you">Shorhakalutyun gnumneri hamar!<br>Spasum enq dzez krkin hard bbarev dzez :)</p>
+    </div>
+</div>
+
+<script>
+    let currentPayment = "Apple Pay";
+
+    function selectPayment(element, method) {
+        // Ջնջում ենք նախորդ ընտրվածի դիզայնը
+        document.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
+        // Ավելացնում ենք նորին
+        element.classList.add('selected');
+        currentPayment = method;
+    }
+
+    function generateReceipt() {
+        const coffeeSelect = document.getElementById('coffee-select');
+        const coffeeName = coffeeSelect.options[coffeeSelect.selectedIndex].text.split(' - ')[0];
+        const coffeePrice = coffeeSelect.value;
+        
+        let sugar = document.getElementById('sugar-input').value;
+        if(sugar < 0) sugar = 0;
+        if(sugar > 5) sugar = 5;
+
+        // Պատահական կոդ 1000-ից 9999
+        const orderCode = Math.floor(Math.random() * 9000) + 1000;
+
+        // Լրացնում ենք չեկի տվյալները
+        document.getElementById('r-coffee').innerText = coffeeName;
+        document.getElementById('r-sugar').innerText = sugar + " gdal";
+        document.getElementById('r-payment').innerText = currentPayment;
+        document.getElementById('r-price').innerText = "$" + coffeePrice;
+        document.getElementById('r-code').innerText = "DZER PATVERI KODE: #" + orderCode;
+
+        // Ցույց ենք տալիս չեկը էկրանին
+        document.getElementById('receipt').style.display = 'block';
+        
+        // Էկրանը սահուն իջեցնում է դեպի չեկը
+        document.getElementById('receipt').scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
